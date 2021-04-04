@@ -9,6 +9,7 @@
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
+const morgan = require("morgan");
 require("colors");
 require("dotenv").config();
 
@@ -30,6 +31,11 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(
+    morgan(
+        ":remote-addr - :remote-user [:date[clf]] - :method :url :status :res[content-length] - :response-time ms"
+    )
+);
 
 /**
  *  @description Establishing Server Connection.
