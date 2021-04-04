@@ -17,6 +17,7 @@ require("dotenv").config();
  *  @description Internal dependencies.
  */
 const connectDB = require("./config/db");
+const logger = require("./config/logger");
 const indexRoutes = require("./router");
 
 /**
@@ -41,6 +42,10 @@ app.use(
  *  @description Establishing Server Connection.
  */
 app.listen(PORT, () => {
+    logger.info("Server Sent A Hello World!");
+    logger.error("Server Sent A Hello World!");
+    logger.warn("Server Sent A Hello World!");
+    logger.debug("Server Sent A Hello World!");
     console.log(`Server is running on port ${PORT}...`.magenta);
 });
 
