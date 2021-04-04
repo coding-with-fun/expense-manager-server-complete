@@ -16,6 +16,7 @@ require("dotenv").config();
  *  @description Internal dependencies.
  */
 const connectDB = require("./config/db");
+const indexRoutes = require("./router");
 
 /**
  *  @description Defining variables.
@@ -45,8 +46,4 @@ connectDB();
 /**
  *  @description Defining Routes.
  */
-app.use("/", (req, res) => {
-    res.json({
-        message: "Hello Sir...",
-    });
-});
+app.use(indexRoutes);
