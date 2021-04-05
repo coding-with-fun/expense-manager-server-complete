@@ -1,3 +1,5 @@
+const logger = require("../../config/logger");
+
 /**
  * @type        GET
  * @route       /expense-manager/auth/signup
@@ -10,7 +12,7 @@ exports.signup = async (req, res) => {
             message: "true",
         });
     } catch (error) {
-        console.log(`${error.message}`.red);
+        logger.error(`${error.message}`);
         return res.status(500).json({
             error: {
                 message: "Internal server error...",

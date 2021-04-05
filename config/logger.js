@@ -27,10 +27,18 @@ const options = {
     },
 };
 
-module.exports = createLogger({
+const logger = createLogger({
     transports: [
         process.env.ENV === "DEV" && new transports.File(options.file),
         new transports.Console(options.console),
     ],
     exitOnError: false,
 });
+
+logger.stream = {
+    write(message) {
+        logger.info(message);
+    },
+};
+
+module.exports = logger;

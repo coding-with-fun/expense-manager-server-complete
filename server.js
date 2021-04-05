@@ -10,7 +10,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
 const morgan = require("morgan");
-require("colors");
 require("dotenv").config();
 
 /**
@@ -33,20 +32,18 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 app.use(
-    morgan(
-        ":remote-addr - :remote-user [:date[clf]] - :method :url :status :res[content-length] - :response-time ms"
-    )
+    morgan("[:date[clf]] - :method :url :status - :response-time ms", {
+        stream: logger.stream,
+    })
 );
 
 /**
  *  @description Establishing Server Connection.
  */
 app.listen(PORT, () => {
-    logger.info("Server Sent A Hello World!");
-    logger.error("Server Sent A Hello World!");
-    logger.warn("Server Sent A Hello World!");
-    logger.debug("Server Sent A Hello World!");
-    console.log(`Server is running on port ${PORT}...`.magenta);
+    logger.info(`Server is running on port ${PORT}...`);
+    // logger.error("Server Sent A Hello World!");
+    // logger.warn("Server Sent A Hello World!");
 });
 
 /**

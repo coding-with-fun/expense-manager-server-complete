@@ -4,7 +4,7 @@
  */
 
 const mongoose = require("mongoose");
-require("colors");
+const logger = require("./logger");
 require("dotenv").config();
 
 const connectDB = async () => {
@@ -20,9 +20,9 @@ const connectDB = async () => {
             useFindAndModify: false,
         });
 
-        console.log(`MongoDB is connected!!`.magenta);
+        logger.info("MongoDB is connected!!");
     } catch (error) {
-        console.log(`${error.message}`.red);
+        logger.error(`${error.message}`);
 
         /**
          * @description Exit process with failure
