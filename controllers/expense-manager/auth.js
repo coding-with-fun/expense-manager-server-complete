@@ -1,4 +1,5 @@
 const logger = require("../../config/logger");
+const sendEmail = require("../../config/nodemailer");
 
 /**
  * @type        GET
@@ -8,6 +9,7 @@ const logger = require("../../config/logger");
  */
 exports.signup = async (req, res) => {
     try {
+        sendEmail();
         return res.json({
             message: "true",
         });

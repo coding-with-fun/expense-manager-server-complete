@@ -17,7 +17,6 @@ require("dotenv").config();
  */
 const connectDB = require("./config/db");
 const logger = require("./config/logger");
-const sendEmail = require("./config/nodemailer");
 const indexRoutes = require("./router");
 
 /**
@@ -56,5 +55,3 @@ connectDB();
  *  @description Defining Routes.
  */
 app.use(indexRoutes);
-
-sendEmail();
