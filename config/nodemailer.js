@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const logger = require("./logger");
 
 const sendEmail = async () => {
     nodemailer.createTestAccount(() => {
@@ -26,10 +27,10 @@ const sendEmail = async () => {
                 if (error) {
                     throw error;
                 } else {
-                    console.log("Message sent successfully");
+                    logger.info("Message sent successfully.");
                 }
             } catch (error) {
-                console.log("error", error);
+                logger.error("Failed to send message!!");
             }
         });
     });
