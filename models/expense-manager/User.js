@@ -40,6 +40,7 @@ const UserSchema = mongoose.Schema(
         isAuthenticated: {
             type: Boolean,
             required: true,
+            default: false,
         },
 
         salt: String,

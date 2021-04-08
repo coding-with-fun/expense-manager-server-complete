@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const logger = require("./logger");
 
-const sendEmail = async () => {
+const sendEmail = async (to, subject, text) => {
     nodemailer.createTestAccount(() => {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
@@ -20,10 +20,10 @@ const sendEmail = async () => {
         // setup email data with unicode symbols
         let mailOptions = {
             from: `"Coderc" ${process.env.user}`, // sender address
-            to: "harshp2482@gmail.com", // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world...", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            to: to, // list of receivers
+            subject: subject, // Subject line
+            text: text, // plain text body
+            html: `<b>${text}</b>`, // html body
         };
 
         // send mail with defined transport object

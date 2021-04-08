@@ -14,6 +14,6 @@ const router = express.Router();
  * @description Sign Up Route.
  * @access      Public
  */
-router.get("/signup", signup);
+router.post("/signup", signup);
 
 module.exports = router;
