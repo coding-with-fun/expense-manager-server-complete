@@ -42,8 +42,6 @@ app.use(
  */
 app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}...`);
-    // logger.error("Server Sent A Hello World!");
-    // logger.warn("Server Sent A Hello World!");
 });
 
 /**

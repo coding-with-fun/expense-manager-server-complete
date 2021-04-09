@@ -15,7 +15,8 @@ exports.authenticateToken = () => {
             secret: process.env.SECRET,
             algorithms: ["HS256"],
             getToken: function getJWT(req) {
-                let token = req.headers.expense_manager_user_token;
+                let token =
+                    req.query.token || req.headers.expense_manager_user_token;
                 token = token.split(" ");
 
                 if (token && token[0] === "Bearer") {

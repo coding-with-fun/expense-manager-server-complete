@@ -30,7 +30,7 @@ const options = {
 const logger = createLogger({
     transports: [
         process.env.ENV === "DEV" && new transports.File(options.file),
-        new transports.Console(options.console),
+        process.env.ENV === "DEV" && new transports.Console(options.console),
     ],
     exitOnError: false,
 });

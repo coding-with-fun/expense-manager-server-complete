@@ -72,7 +72,7 @@ exports.signup = async (req, res) => {
          * @description Send confirmation email to given email address.
          */
         const emailSubject = "Please confirm your account.";
-        const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/confirm-account?token=${token}">link</a></p>`;
+        const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
         sendEmail(user.email, emailSubject, emailText);
         return res.json({
             message: "User created successfully.",
@@ -143,7 +143,7 @@ exports.signin = async (req, res) => {
              * @description Send confirmation email to given email address.
              */
             const emailSubject = "Please confirm your account.";
-            const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/confirm-account?token=${token}">link</a></p>`;
+            const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
             sendEmail(user.email, emailSubject, emailText);
             return res.status(401).json({
                 message:
@@ -174,6 +174,27 @@ exports.signin = async (req, res) => {
             token,
             message: "User signed in successfully",
             user: user,
+        });
+    } catch (error) {
+        logger.error(`${error.message}`);
+        return res.status(500).json({
+            message: "Internal server error...",
+        });
+    }
+};
+
+/**
+ * @type        POST
+ * @route       /expense-manager/auth/confirm-account
+ * @description Account confirmation Route.
+ * @access      Public
+ */
+exports.confirmAccount = async (req, res) => {
+    try {
+        const { token } = req.query;
+
+        return res.status(200).json({
+            message: "Passed.",
         });
     } catch (error) {
         logger.error(`${error.message}`);
