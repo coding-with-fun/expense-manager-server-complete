@@ -68,8 +68,11 @@ exports.signup = async (req, res) => {
             }
         );
 
+        /**
+         * @description Send confirmation email to given email address.
+         */
         const emailSubject = "Please confirm your account.";
-        const emailText = `To confirm your account please click on this link, ${process.env.SERVER_URL}/confirm-account?token=${token}`;
+        const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/confirm-account?token=${token}">link</a></p>`;
         sendEmail(user.email, emailSubject, emailText);
         return res.json({
             message: "User created successfully.",
@@ -90,7 +93,7 @@ exports.signup = async (req, res) => {
  */
 exports.signin = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, email, password } = req.body;
         /**
          * @description Check if user exists with given username.
          * @param username
@@ -121,8 +124,30 @@ exports.signin = async (req, res) => {
         }
 
         if (!user.isAuthenticated) {
+            /**
+             * @description Generate token using jsonwebtoken package.
+             * @param User ID
+             * @param A string as salt
+             */
+            const token = jwt.sign(
+                {
+                    _id: user._id,
+                },
+                process.env.SECRET,
+                {
+                    expiresIn: "0.5hr",
+                }
+            );
+
+            /**
+             * @description Send confirmation email to given email address.
+             */
+            const emailSubject = "Please confirm your account.";
+            const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/confirm-account?token=${token}">link</a></p>`;
+            sendEmail(user.email, emailSubject, emailText);
             return res.status(401).json({
-                message: "Please validate your account.",
+                message:
+                    "Confirmation mail has been sent to your email address. Please validate your account.",
             });
         }
 
