@@ -4,8 +4,8 @@
  */
 
 const express = require("express");
-const { signup } = require("../../controllers/expense-manager/auth");
-const { validateSignUp } = require("../../middleware/checkReq");
+const { signup, signin } = require("../../controllers/expense-manager/auth");
+const { validateSignUp, validateSignIn } = require("../../middleware/checkReq");
 
 const router = express.Router();
 
@@ -16,5 +16,6 @@ const router = express.Router();
  * @access      Public
  */
 router.post("/signup", validateSignUp, signup);
+router.post("/signin", validateSignIn, signin);
 
 module.exports = router;
