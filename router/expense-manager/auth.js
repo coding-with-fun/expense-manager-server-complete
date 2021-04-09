@@ -5,6 +5,7 @@
 
 const express = require("express");
 const { signup } = require("../../controllers/expense-manager/auth");
+const { validateSignUp } = require("../../middleware/checkReq");
 
 const router = express.Router();
 
@@ -14,6 +15,6 @@ const router = express.Router();
  * @description Sign Up Route.
  * @access      Public
  */
-router.post("/signup", signup);
+router.post("/signup", validateSignUp, signup);
 
 module.exports = router;

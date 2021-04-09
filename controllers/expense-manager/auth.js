@@ -23,14 +23,20 @@ exports.signup = async (req, res) => {
          * @param email
          */
         const username = req.body.username;
+        const email = req.body.email;
         const existingUser = await User.findOne({
-            username,
+            $or: [
+                {
+                    email: email,
+                },
+                {
+                    username: username,
+                },
+            ],
         });
         if (existingUser) {
             return res.status(400).json({
-                error: {
-                    message: "User already exists.",
-                },
+                message: "User already exists.",
             });
         }
 
@@ -63,17 +69,15 @@ exports.signup = async (req, res) => {
         );
 
         const emailSubject = "Please confirm your account.";
-        const emailText = `To confirm your account please click on this link, https://arccoder.in/confirm-account?token=${token}`;
+        const emailText = `To confirm your account please click on this link, ${process.env.SERVER_URL}/confirm-account?token=${token}`;
         sendEmail(user.email, emailSubject, emailText);
         return res.json({
-            message: "true",
+            message: "User created successfully.",
         });
     } catch (error) {
         logger.error(`${error.message}`);
         return res.status(500).json({
-            error: {
-                message: "Internal server error...",
-            },
+            message: "Internal server error...",
         });
     }
 };

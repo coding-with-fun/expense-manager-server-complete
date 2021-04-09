@@ -29,9 +29,7 @@ exports.authenticateToken = () => {
         (err, req, res, next) => {
             logger.error("Invalid token received.");
             return res.status(err.status).json({
-                error: {
-                    message: err.inner.message,
-                },
+                message: err.inner.message,
             });
         },
     ];
