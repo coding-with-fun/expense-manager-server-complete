@@ -16,13 +16,13 @@ const options = {
     secure: true,
 };
 
-const sendConfirmationEmail = (token) => {
+const sendConfirmationEmail = (emailAddress, token) => {
     /**
      * @description Send confirmation email to given email address.
      */
     const emailSubject = "Please confirm your account.";
     const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
-    sendEmail(user.email, emailSubject, emailText);
+    sendEmail(emailAddress, emailSubject, emailText);
 };
 
 /**
@@ -87,9 +87,10 @@ exports.signup = async (req, res) => {
         /**
          * @description Send confirmation email to given email address.
          */
-        sendConfirmationEmail(token);
+        sendConfirmationEmail(user.email, token);
         return res.json({
-            message: "User created successfully.",
+            message:
+                "User created successfully. Confirmation mail has been sent to your email address. Please validate your account.",
         });
     } catch (error) {
         logger.error(`${error.message}`);
@@ -156,7 +157,7 @@ exports.signin = async (req, res) => {
             /**
              * @description Send confirmation email to given email address.
              */
-            sendConfirmationEmail(token);
+            sendConfirmationEmail(user.email, token);
             return res.status(401).json({
                 message:
                     "Confirmation mail has been sent to your email address. Please validate your account.",
