@@ -4,11 +4,7 @@
  */
 
 const express = require("express");
-const {
-    signup,
-    signin,
-    confirmAccount,
-} = require("../../controllers/expense-manager/auth");
+const { signup, signin, confirmAccount } = require("../../controllers");
 const { authenticateToken } = require("../../middleware/auth");
 const { validateSignUp, validateSignIn } = require("../../middleware/checkReq");
 

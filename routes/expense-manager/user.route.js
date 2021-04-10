@@ -4,7 +4,7 @@
  */
 
 const express = require("express");
-const { userDetails } = require("../../controllers/expense-manager/user");
+const { userDetails } = require("../../controllers");
 const { authenticateToken } = require("../../middleware/auth");
 
 const router = express.Router();

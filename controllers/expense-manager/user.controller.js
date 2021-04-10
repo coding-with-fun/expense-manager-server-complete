@@ -4,7 +4,7 @@
  */
 
 const logger = require("../../config/logger");
-const User = require("../../models/expense-manager/User");
+const { User } = require("../../models");
 
 /**
  * @type        GET

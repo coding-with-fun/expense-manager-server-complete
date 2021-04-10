@@ -5,8 +5,8 @@
 
 const express = require("express");
 
-const authRoutes = require("./auth");
-const userRoutes = require("./user");
+const authRoutes = require("./auth.route");
+const userRoutes = require("./user.route");
 
 const app = express();
 

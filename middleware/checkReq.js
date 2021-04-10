@@ -124,7 +124,7 @@ const returnErrors = (req, res, next) => {
     next();
 };
 
-module.exports = userValidator = {
+module.exports = {
     validateSignUp: [signUpCheckReq(), returnErrors],
     validateSignIn: [signInCheckReq(), returnErrors],
     validateTransaction: [transactionsCheckReq(), returnErrors],

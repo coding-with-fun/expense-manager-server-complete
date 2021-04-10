@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const logger = require("../../config/logger");
 const sendEmail = require("../../config/nodemailer");
-const User = require("../../models/expense-manager/User");
+const { User } = require("../../models");
 
 const devOptions = {
     maxAge: 999999999999999,
