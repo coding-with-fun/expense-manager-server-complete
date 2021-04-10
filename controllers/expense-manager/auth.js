@@ -9,7 +9,11 @@ const logger = require("../../config/logger");
 const sendEmail = require("../../config/nodemailer");
 const User = require("../../models/expense-manager/User");
 
-const options = {
+const devOptions = {
+    maxAge: 999999999999999,
+};
+
+const prodOptions = {
     maxAge: 999999999999999,
     httpOnly: true,
     sameSite: "none",
@@ -181,7 +185,11 @@ exports.signin = async (req, res) => {
             },
             process.env.SECRET
         );
-        res.cookie("expense_manager_user_token", "Bearer " + token, options);
+        res.cookie(
+            "expense_manager_user_token",
+            "Bearer " + token,
+            process.env.ENV === "DEV" ? devOptions : prodOptions
+        );
 
         return res.status(200).json({
             token,
@@ -254,7 +262,11 @@ exports.confirmAccount = async (req, res) => {
             },
             process.env.SECRET
         );
-        res.cookie("expense_manager_user_token", "Bearer " + token, options);
+        res.cookie(
+            "expense_manager_user_token",
+            "Bearer " + token,
+            process.env.ENV === "DEV" ? devOptions : prodOptions
+        );
 
         return res.status(200).json({
             token,

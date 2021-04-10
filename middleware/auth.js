@@ -16,15 +16,22 @@ exports.authenticateToken = () => {
             algorithms: ["HS256"],
             userProperty: "auth",
             getToken: function getJWT(req) {
+                /**
+                 * @description Get token from query or headers or cookies
+                 */
                 let token =
-                    req.query.token || req.headers.expense_manager_user_token;
-                token = token.split(" ");
+                    req.query.token ||
+                    req.headers.expense_manager_user_token ||
+                    req.cookies.expense_manager_user_token;
+                if (token) {
+                    token = token.split(" ");
 
-                if (token && token[0] === "Bearer") {
-                    return token[1];
-                } else {
-                    logger.error("Invalid token received.");
-                    return null;
+                    if (token[0] === "Bearer") {
+                        return token[1];
+                    } else {
+                        logger.error("Invalid token received.");
+                        return null;
+                    }
                 }
             },
         }),
