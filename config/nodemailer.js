@@ -1,13 +1,27 @@
+/**
+ * @author @harsh-coderc
+ * @description Nodemailer configuration to send email.
+ */
+
+/**
+ * @description Importing package dependencies.
+ */
 const nodemailer = require("nodemailer");
+
+/**
+ *  @description Importing internal dependencies.
+ */
 const logger = require("./logger");
 
 const sendEmail = async (to, subject, text) => {
     nodemailer.createTestAccount(() => {
-        // create reusable transporter object using the default SMTP transport
+        /**
+         * @description Creating reusable transporter object using the default SMTP transport.
+         */
         let transporter = nodemailer.createTransport({
             host: process.env.host,
             port: 587,
-            secure: false, // true for 465, false for other ports
+            secure: false, // true for 465, false for other ports.
             auth: {
                 user: process.env.user,
                 pass: process.env.password,
@@ -17,16 +31,20 @@ const sendEmail = async (to, subject, text) => {
             },
         });
 
-        // setup email data with unicode symbols
+        /**
+         * @description Setting up email data.
+         */
         let mailOptions = {
-            from: `"Coderc" ${process.env.user}`, // sender address
-            to: to, // list of receivers
+            from: `"Coderc" ${process.env.user}`, // Sender address
+            to: to, // List of receivers
             subject: subject, // Subject line
-            text: text, // plain text body
-            html: text, // html body
+            text: text, // Plain text body
+            html: text, // HTML body
         };
 
-        // send mail with defined transport object
+        /**
+         * @description Sending email with defined transport object.
+         */
         transporter.sendMail(mailOptions, (error) => {
             try {
                 if (error) {

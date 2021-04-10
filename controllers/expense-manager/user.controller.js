@@ -1,8 +1,11 @@
 /**
- * @author Coderc
- * @description User controller.
+ * @author @harsh-coderc
+ * @description User controller for Expense Manager.
  */
 
+/**
+ *  @description Importing internal dependencies.
+ */
 const logger = require("../../config/logger");
 const { User } = require("../../models");
 
@@ -15,23 +18,29 @@ const { User } = require("../../models");
 exports.userDetails = async (req, res) => {
     try {
         const userID = req.auth;
-        const user = await User.findOne({
-            _id: userID,
-        })
+
+        /**
+         * @description Checking if user exists with given user ID
+         *              and returns user without salt and encrypted password.
+         */
+        const user = await User.findById(userID)
             .populate(
                 "transactionList",
                 "_id title description category amount date"
             )
-            .select({ encryptedPassword: 0, salt: 0 });
-
-        /**
-         * @description Return error if no user is present by given ID.
-         */ if (!user) {
+            .select({
+                encryptedPassword: 0,
+                salt: 0,
+            });
+        if (!user) {
             return res.status(404).json({
                 message: "User not found.",
             });
         }
 
+        /**
+         * @description Returning the user details.
+         */
         return res.status(200).json({
             message: "User details fetched successfully.",
             user,

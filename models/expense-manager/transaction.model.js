@@ -1,8 +1,11 @@
 /**
- * @author Coderc
- * @description Transaction Model.
+ * @author @harsh-coderc
+ * @description Transaction Model for Expense Manager.
  */
 
+/**
+ * @description Importing package dependencies.
+ */
 const mongoose = require("mongoose");
 
 const TransactionSchema = mongoose.Schema(

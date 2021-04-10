@@ -1,3 +1,8 @@
+/**
+ * @author @harsh-coderc
+ * @description Index controller.
+ */
+
 const {
     signup,
     signin,

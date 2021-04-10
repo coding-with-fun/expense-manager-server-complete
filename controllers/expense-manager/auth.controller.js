@@ -1,31 +1,49 @@
 /**
- * @author Coderc
- * @description Authentication controller.
+ * @author @harsh-coderc
+ * @description Authentication controller for Expense Manager.
  */
 
+/**
+ * @description Importing package dependencies.
+ */
 const jwt = require("jsonwebtoken");
 
+/**
+ *  @description Importing internal dependencies.
+ */
 const logger = require("../../config/logger");
 const sendEmail = require("../../config/nodemailer");
 const { User } = require("../../models");
 
-const devOptions = {
-    maxAge: 999999999999999,
-};
+/**
+ * @description Defining options to set cookies in response.
+ */
+const resCookieOptions =
+    process.env.ENV === "DEV"
+        ? {
+              maxAge: 999999999999999,
+          }
+        : {
+              maxAge: 999999999999999,
+              httpOnly: true,
+              sameSite: "none",
+              secure: true,
+          };
 
-const prodOptions = {
-    maxAge: 999999999999999,
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-};
-
+/**
+ * @description Sending confirmation email to given email address.
+ * @param {string} emailAddress
+ * @param {string} token
+ */
 const sendConfirmationEmail = (emailAddress, token) => {
-    /**
-     * @description Send confirmation email to given email address.
-     */
     const emailSubject = "Please confirm your account.";
-    const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
+    const emailText =
+        `<p>To confirm your account please click on this ` +
+        `<a href="${process.env.CLIENT_URL}/auth/confirm-account?token=Bearer ${token}">` +
+        `link` +
+        `</a>` +
+        `</p>`;
+
     sendEmail(emailAddress, emailSubject, emailText);
 };
 
@@ -38,11 +56,9 @@ const sendConfirmationEmail = (emailAddress, token) => {
 exports.signup = async (req, res) => {
     try {
         const { username, email } = req.body;
+
         /**
-         * @description Check if user exists with given username.
-         * @param username
-         * @param email
-         * @param username
+         * @description Checking if user exists with given email or username.
          */
         let existingUser = await User.findOne({
             $or: [
@@ -61,22 +77,20 @@ exports.signup = async (req, res) => {
         }
 
         /**
-         * @description Create new user and save it.
-         * @param Request Body
+         * @description Creating new user with passed request body and save it.
          */
         let user = new User(req.body);
         await user.save();
 
+        /**
+         * @description Deleting salt and encrypted password from user object.
+         */
         user = user.toJSON();
         delete user.salt;
         delete user.encryptedPassword;
 
         /**
-         * @description Generate token using jsonwebtoken package.
-         *              Set token to cookie.
-         *              Return the user details with token.
-         * @param User ID
-         * @param A string as salt
+         * @description Generating token using jsonwebtoken package with user ID.
          */
         const token = jwt.sign(
             {
@@ -89,7 +103,7 @@ exports.signup = async (req, res) => {
         );
 
         /**
-         * @description Send confirmation email to given email address.
+         * @description Sending confirmation email to the given email address.
          */
         sendConfirmationEmail(user.email, token);
         return res.json({
@@ -113,10 +127,9 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
     try {
         const { username, email, password } = req.body;
+
         /**
-         * @description Check if user exists with given username.
-         * @param username
-         * @param email
+         * @description Checking if user exists with given email or username.
          */
         let user = await User.findOne({
             $or: [
@@ -133,8 +146,8 @@ exports.signin = async (req, res) => {
         );
 
         /**
-         * @description Checks if user is present with provided username or email address or
-         *              password if is matched with matched with database.
+         * @description Checking if user is present with provided email address or username or
+         *              if password is matched with database.
          */
         if (!user || !user.authenticate(password)) {
             return res.status(401).json({
@@ -142,11 +155,13 @@ exports.signin = async (req, res) => {
             });
         }
 
+        /**
+         * @description If user is not authenticated,
+         *              sending confirmation email to given email address.
+         */
         if (!user.isAuthenticated) {
             /**
-             * @description Generate token using jsonwebtoken package.
-             * @param User ID
-             * @param A string as salt
+             * @description Generating token using jsonwebtoken package with user ID.
              */
             const token = jwt.sign(
                 {
@@ -159,7 +174,7 @@ exports.signin = async (req, res) => {
             );
 
             /**
-             * @description Send confirmation email to given email address.
+             * @description Sending confirmation email to the given email address.
              */
             sendConfirmationEmail(user.email, token);
             return res.status(401).json({
@@ -168,16 +183,17 @@ exports.signin = async (req, res) => {
             });
         }
 
+        /**
+         * @description Deleting salt and encrypted password from user object.
+         */
         user = user.toJSON();
         delete user.salt;
         delete user.encryptedPassword;
 
         /**
-         * @description Generate token using jsonwebtoken package.
-         *              Set token to cookie.
-         *              Return the user details with token.
-         * @param User ID
-         * @param A string as salt
+         * @description Generating token using jsonwebtoken package.
+         *              Setting token to cookie.
+         *              Returning the user details with token.
          */
         const token = jwt.sign(
             {
@@ -188,12 +204,11 @@ exports.signin = async (req, res) => {
         res.cookie(
             "expense_manager_user_token",
             "Bearer " + token,
-            process.env.ENV === "DEV" ? devOptions : prodOptions
+            resCookieOptions
         );
-
         return res.status(200).json({
-            token,
             message: "User signed in successfully",
+            token,
             user: user,
         });
     } catch (error) {
@@ -205,33 +220,46 @@ exports.signin = async (req, res) => {
 };
 
 /**
- * @type        POST
+ * @type        PUT
  * @route       /expense-manager/auth/confirm-account
  * @description Account confirmation Route.
- * @access      Public
+ * @access      Private
  */
 exports.confirmAccount = async (req, res) => {
     try {
         const user = req.auth;
-        const options = {
-            new: true,
-        }; // Returns updated value.
 
-        let existingUser = await User.findOne({
-            _id: user._id,
-        });
-
+        /**
+         * @description Checking if user exists with given user ID.
+         * @returns
+         *          - 401 -> User does not exist.
+         *          - 404 -> User is already authenticated.
+         */
+        let existingUser = await User.findById(user);
+        if (!existingUser) {
+            return res.status(401).json({
+                message: "User not found.",
+            });
+        }
         if (existingUser.isAuthenticated) {
             return res.status(404).json({
                 message: "URL not found.",
             });
         }
 
+        /**
+         * @description Updating the user and returns user without salt and encrypted password.
+         *              Setting isAuthenticated parameter to true.
+         */
+        const updateQuery = {
+            isAuthenticated: true,
+        };
+        const options = {
+            new: true,
+        }; // Returns updated value.
         let updatedUser = await User.findByIdAndUpdate(
             user._id,
-            {
-                isAuthenticated: true,
-            },
+            updateQuery,
             options
         )
             .populate(
@@ -242,7 +270,6 @@ exports.confirmAccount = async (req, res) => {
                 encryptedPassword: 0,
                 salt: 0,
             });
-
         if (!updatedUser) {
             return res.status(401).json({
                 message: "User not found.",
@@ -250,11 +277,9 @@ exports.confirmAccount = async (req, res) => {
         }
 
         /**
-         * @description Generate token using jsonwebtoken package.
-         *              Set token to cookie.
-         *              Return the user details with token.
-         * @param User ID
-         * @param A string as salt
+         * @description Generating token using jsonwebtoken package.
+         *              Setting token to cookie.
+         *              Returning the user details with token.
          */
         const token = jwt.sign(
             {
@@ -265,12 +290,11 @@ exports.confirmAccount = async (req, res) => {
         res.cookie(
             "expense_manager_user_token",
             "Bearer " + token,
-            process.env.ENV === "DEV" ? devOptions : prodOptions
+            resCookieOptions
         );
-
         return res.status(200).json({
-            token,
             message: "User authenticated successfully.",
+            token,
             user: updatedUser,
         });
     } catch (error) {

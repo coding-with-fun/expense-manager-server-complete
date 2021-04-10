@@ -1,16 +1,22 @@
 /**
- * @author Coderc
+ * @author @harsh-coderc
  * @description Connection to MongoDB.
  */
 
+/**
+ * @description Importing package dependencies.
+ */
 const mongoose = require("mongoose");
 const logger = require("./logger");
 require("dotenv").config();
 
+/**
+ * @description Defining connection function.
+ */
 const connectDB = async () => {
     try {
         /**
-         * @description Connection to MongoDB
+         * @description Connecting to MongoDB.
          * @param MONGO_URI
          */
         await mongoose.connect(process.env.MONGO_URI, {

@@ -1,8 +1,11 @@
 /**
- * @author Coderc
+ * @author @harsh-coderc
  * @description Request validation.
  */
 
+/**
+ * @description Importing package dependencies.
+ */
 const { check, validationResult, oneOf } = require("express-validator");
 const moment = require("moment");
 
@@ -109,9 +112,6 @@ const transactionsCheckReq = () => [
 
 /**
  * @description Checking for errors.
- * @param req
- * @param res
- * @param next
  * @returns Array of errors
  */
 const returnErrors = (req, res, next) => {

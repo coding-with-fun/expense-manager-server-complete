@@ -1,11 +1,18 @@
 /**
- * @author Coderc
- * @description User Model.
+ * @author @harsh-coderc
+ * @description User Model for Expense Manager.
  */
 
+/**
+ * @description Importing package dependencies.
+ */
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const { v4: uuid } = require("uuid");
+
+/**
+ *  @description Importing internal dependencies.
+ */
 const logger = require("../../config/logger");
 
 const { ObjectId } = mongoose.Schema;
@@ -67,8 +74,7 @@ UserSchema.virtual("password")
 
 UserSchema.methods = {
     /**
-     * @description Authenticate user with the plain password
-     * @param plainPassword
+     * @description Authenticating user with the plain password.
      * @returns { boolean }
      */
     authenticate: function (plainPassword) {
@@ -76,8 +82,7 @@ UserSchema.methods = {
     },
 
     /**
-     * @description Hash the plain password
-     * @param plainPassword
+     * @description Hashing the plain password.
      * @returns { string }
      */
     securePassword: function (plainPassword) {
