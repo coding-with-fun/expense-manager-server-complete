@@ -17,7 +17,7 @@ require("dotenv").config();
  */
 const connectDB = require("./config/db");
 const logger = require("./config/logger");
-const indexRoutes = require("./router");
+const indexRoutes = require("./routes");
 
 /**
  *  @description Defining variables.
