@@ -9,6 +9,22 @@ const logger = require("../../config/logger");
 const sendEmail = require("../../config/nodemailer");
 const User = require("../../models/expense-manager/User");
 
+const options = {
+    maxAge: 999999999999999,
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+};
+
+const sendConfirmationEmail = (token) => {
+    /**
+     * @description Send confirmation email to given email address.
+     */
+    const emailSubject = "Please confirm your account.";
+    const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
+    sendEmail(user.email, emailSubject, emailText);
+};
+
 /**
  * @type        POST
  * @route       /expense-manager/auth/signup
@@ -24,7 +40,7 @@ exports.signup = async (req, res) => {
          * @param email
          * @param username
          */
-        const existingUser = await User.findOne({
+        let existingUser = await User.findOne({
             $or: [
                 {
                     email: email,
@@ -71,9 +87,7 @@ exports.signup = async (req, res) => {
         /**
          * @description Send confirmation email to given email address.
          */
-        const emailSubject = "Please confirm your account.";
-        const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
-        sendEmail(user.email, emailSubject, emailText);
+        sendConfirmationEmail(token);
         return res.json({
             message: "User created successfully.",
         });
@@ -99,7 +113,7 @@ exports.signin = async (req, res) => {
          * @param username
          * @param email
          */
-        const user = await User.findOne({
+        let user = await User.findOne({
             $or: [
                 {
                     email: email,
@@ -142,9 +156,7 @@ exports.signin = async (req, res) => {
             /**
              * @description Send confirmation email to given email address.
              */
-            const emailSubject = "Please confirm your account.";
-            const emailText = `<p>To confirm your account please click on this <a href="${process.env.SERVER_URL}/auth/confirm-account?token=Bearer ${token}">link</a></p>`;
-            sendEmail(user.email, emailSubject, emailText);
+            sendConfirmationEmail(token);
             return res.status(401).json({
                 message:
                     "Confirmation mail has been sent to your email address. Please validate your account.",
@@ -191,10 +203,62 @@ exports.signin = async (req, res) => {
  */
 exports.confirmAccount = async (req, res) => {
     try {
-        const { token } = req.query;
+        const user = req.auth;
+        const options = {
+            new: true,
+        }; // Returns updated value.
+
+        let existingUser = await User.findOne({
+            _id: user._id,
+        });
+
+        if (existingUser.isAuthenticated) {
+            return res.status(404).json({
+                message: "URL not found.",
+            });
+        }
+
+        let updatedUser = await User.findByIdAndUpdate(
+            user._id,
+            {
+                isAuthenticated: true,
+            },
+            options
+        )
+            .populate(
+                "transactionList",
+                "_id title description category amount date"
+            )
+            .select({
+                encryptedPassword: 0,
+                salt: 0,
+            });
+
+        if (!updatedUser) {
+            return res.status(401).json({
+                message: "User not found.",
+            });
+        }
+
+        /**
+         * @description Generate token using jsonwebtoken package.
+         *              Set token to cookie.
+         *              Return the user details with token.
+         * @param User ID
+         * @param A string as salt
+         */
+        const token = jwt.sign(
+            {
+                _id: updatedUser._id,
+            },
+            process.env.SECRET
+        );
+        res.cookie("expense_manager_user_token", "Bearer " + token, options);
 
         return res.status(200).json({
-            message: "Passed.",
+            token,
+            message: "User authenticated successfully.",
+            user: updatedUser,
         });
     } catch (error) {
         logger.error(`${error.message}`);

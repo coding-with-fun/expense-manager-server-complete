@@ -14,6 +14,7 @@ exports.authenticateToken = () => {
         jwt({
             secret: process.env.SECRET,
             algorithms: ["HS256"],
+            userProperty: "auth",
             getToken: function getJWT(req) {
                 let token =
                     req.query.token || req.headers.expense_manager_user_token;
