@@ -38,7 +38,7 @@ router.post("/signin", validateSignIn, signin);
 
 /**
  * @type        PUT
- * @route       /expense-manager/auth/confirm-account
+ * @route       /expense-manager/auth/confirm-account?token=:token
  * @description Account confirmation Route.
  * @access      Private
  */
