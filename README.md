@@ -1,1 +1,1 @@
-# expense-manager-server
+# Expense Manager (Server)
