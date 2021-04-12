@@ -12,6 +12,7 @@ const { userDetails } = require("./expense-manager/user.controller");
 const {
     getTransactions,
     insertTransaction,
+    deleteTransaction,
 } = require("./expense-manager/transaction.controller");
 
 module.exports = {
@@ -21,4 +22,5 @@ module.exports = {
     userDetails,
     getTransactions,
     insertTransaction,
+    deleteTransaction,
 };

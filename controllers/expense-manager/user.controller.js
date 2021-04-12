@@ -11,7 +11,7 @@ const { User } = require("../../models");
 
 /**
  * @type        GET
- * @route       /user
+ * @route       /expense-manager/user
  * @description Fetch User's Details route.
  * @access      Private
  */

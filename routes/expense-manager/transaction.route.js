@@ -7,7 +7,11 @@
  * @description Importing package dependencies.
  */
 const express = require("express");
-const { getTransactions, insertTransaction } = require("../../controllers");
+const {
+    getTransactions,
+    insertTransaction,
+    deleteTransaction,
+} = require("../../controllers");
 const { authenticateToken } = require("../../middleware/auth");
 const { validateTransaction } = require("../../middleware/checkReq");
 
@@ -36,5 +40,13 @@ router.post(
     validateTransaction,
     insertTransaction
 );
+
+/**
+ * @type        DELETE
+ * @route       /expense-manager/transaction/delete
+ * @description Delete transaction.
+ * @access      Private
+ */
+router.delete("/delete", authenticateToken(), deleteTransaction);
 
 module.exports = router;
