@@ -11,8 +11,8 @@ const { User } = require("../../models");
 
 /**
  * @type        GET
- * @route       /api/user
- * @description Fetch User's Details controller.
+ * @route       /user
+ * @description Fetch User's Details route.
  * @access      Private
  */
 exports.userDetails = async (req, res) => {
@@ -25,7 +25,7 @@ exports.userDetails = async (req, res) => {
          */
         const user = await User.findById(userID)
             .populate(
-                "transactionList",
+                "transactionsList",
                 "_id title description category amount date"
             )
             .select({

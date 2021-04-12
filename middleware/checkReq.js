@@ -49,10 +49,6 @@ const checks = {
         .trim()
         .notEmpty()
         .withMessage("Title is required."),
-    checkDescription: check("description")
-        .trim()
-        .notEmpty()
-        .withMessage("Description is required."),
     checkAmount: check("amount")
         .trim()
         .notEmpty()
@@ -74,7 +70,7 @@ const checks = {
         .notEmpty()
         .withMessage("Category is required.")
         .custom((value) => {
-            if (!["income", "expense"].includes(value)) {
+            if (![0, 1].includes(+value)) {
                 throw new Error("Please enter a valid category.");
             }
             return true;
@@ -104,10 +100,9 @@ const signInCheckReq = () => [
  */
 const transactionsCheckReq = () => [
     checks.checkTitle,
-    checks.checkDescription,
     checks.checkAmount,
-    checks.checkDate,
     checks.checkCategory,
+    checks.checkDate,
 ];
 
 /**

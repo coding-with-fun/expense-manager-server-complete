@@ -141,7 +141,7 @@ exports.signin = async (req, res) => {
                 },
             ],
         }).populate(
-            "transactionList",
+            "transactionsList",
             "_id title description category amount date"
         );
 
@@ -263,7 +263,7 @@ exports.confirmAccount = async (req, res) => {
             options
         )
             .populate(
-                "transactionList",
+                "transactionsList",
                 "_id title description category amount date"
             )
             .select({

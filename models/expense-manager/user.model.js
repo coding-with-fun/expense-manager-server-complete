@@ -52,10 +52,12 @@ const UserSchema = mongoose.Schema(
 
         salt: String,
 
-        transactionsList: {
-            type: ObjectId,
-            ref: "Transaction",
-        },
+        transactionsList: [
+            {
+                type: ObjectId,
+                ref: "Transaction",
+            },
+        ],
     },
     {
         timestamps: true,
